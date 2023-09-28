@@ -81,10 +81,13 @@ fun remoteFile(urlIn: String): File {
     return tmp
 }
 
-fun net(url: String): File =
+fun remote(url: String): File =
     remoteFile(url)
 
-fun File.named(name: String): FileFile =
+fun local(path: String): File =
+    File(path)
+
+infix fun File.named(name: String): FileFile =
     FileFile(name, this)
 
 open class Bundle(
@@ -95,20 +98,8 @@ open class Bundle(
         dir.deleteOnExit()
     }
 
-    fun jar(path: String) {
-        val f = zipFile(path)
-        file(f)
-        f.deleteRecursively()
-    }
-
     fun jar(file: File) {
         val f = zipFile(file)
-        file(f)
-        f.deleteRecursively()
-    }
-
-    fun zip(path: String) {
-        val f = zipFile(path)
         file(f)
         f.deleteRecursively()
     }
@@ -129,6 +120,10 @@ open class Bundle(
 
     fun text(name: String, content: () -> String) {
         this with textFile(name, content)
+    }
+
+    fun binary(name: String, content: () -> ByteArray) {
+        this with binaryFile(name, content)
     }
 
 }
@@ -219,6 +214,13 @@ data class FileFile(
 fun textFile(name: String, content: () -> String): FileFile {
     val file = File("tmp_${System.nanoTime()}")
     file.writeText(content())
+    file.deleteOnExit()
+    return FileFile(name, file)
+}
+
+fun binaryFile(name: String, content: () -> ByteArray): FileFile {
+    val file = File("tmp_${System.nanoTime()}")
+    file.writeBytes(content())
     file.deleteOnExit()
     return FileFile(name, file)
 }
