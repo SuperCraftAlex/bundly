@@ -191,6 +191,9 @@ private fun pack(sourceDirPath: Path, zipFilePath: Path) {
 fun Bundle.bundle(outputPath: String): Bundled {
     val outputFile = File(outputPath)
     outputFile.parentFile?.mkdirs()
+    if (outputFile.isFile) {
+        outputFile.delete()
+    }
     pack(dir.toPath(), outputFile.toPath())
     dir.deleteRecursively()
     return Bundled(outputFile)
