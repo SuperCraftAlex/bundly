@@ -1,3 +1,5 @@
+#!/bin/bash
+
 rm -rf .bundly_build
 
 if [[ "$#" -ne 2 ]]; then
@@ -18,7 +20,7 @@ kotlinc -cp /lib/bundly/ -d .bundly_build $1
 if [ $? -eq 0 ]; then
   echo "Compiling done!"
 else
-  echo "Error occured during compiling of bundeling program!"
+  echo "Error occurred during compiling of bundling program!"
   exit $?
 fi
 
@@ -31,11 +33,11 @@ echo "Executing..."
 
 kotlin -cp /lib/bundly/ -cp .bundly_build/ "$2"
 
-rm -rf .bundly_build
-
 if [ $? -eq 0 ]; then
   echo "Done!"
+  rm -rf .bundly_build
 else
   echo "Error occured execution!"
+  rm -rf .bundly_build
   exit $?
 fi
